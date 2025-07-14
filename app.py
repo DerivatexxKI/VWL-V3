@@ -72,13 +72,13 @@ if uploaded_files and st.button("📈 Prognose jetzt generieren und als Word-Dat
 
     with st.spinner("Generiere Prognose..."):
         try:
-            response = openai.ChatCompletion.create(
+            response = openai.chat.completions.create(
                 model="gpt-4",
                 messages=[{"role": "user", "content": prompt}],
                 temperature=0.7,
                 max_tokens=3000
             )
-            result = response.choices[0].message["content"]
+            result = response.choices[0].message.content
             st.success("✅ Prognose erfolgreich erstellt!")
             st.markdown(result)
 
