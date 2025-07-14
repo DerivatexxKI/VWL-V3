@@ -28,11 +28,15 @@ if uploaded_files:
             with pdfplumber.open(file) as pdf:
                 text = "\n".join(page.extract_text() or "" for page in pdf.pages)
                 extracted_texts.append(text)
+                if len(text.strip()) < 500:
+                    st.warning(f"⚠️ Wenig Text erkannt in PDF '{file.name}'. Die Datei enthält möglicherweise eingescannten oder nicht maschinenlesbaren Text.")
         elif file.name.endswith(".docx"):
             from docx import Document as DocxDocument
             docx = DocxDocument(file)
             text = "\n".join([para.text for para in docx.paragraphs])
             extracted_texts.append(text)
+            if len(text.strip()) < 500:
+                st.warning(f"⚠️ Wenig Text erkannt in Word-Datei '{file.name}'. Bitte prüfen, ob sie inhaltlich korrekt gefüllt ist.")
 
 # Button zur Prognoseerstellung
 if st.button("📈 Prognose jetzt generieren und als Word-Datei exportieren"):
