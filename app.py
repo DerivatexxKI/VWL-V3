@@ -38,6 +38,11 @@ if uploaded_files:
 if st.button("📈 Prognose jetzt generieren und als Word-Datei exportieren"):
     context_text = "\n\n".join(extracted_texts)
 
+    # Begrenzung der Textmenge zur Vermeidung von Token-Limitüberschreitungen
+    max_chars = 15000
+    context_text = context_text[:max_chars]
+    st.info(f"📏 Eingabeumfang (nach Kürzung): {len(context_text):,} Zeichen")
+
     prompt = f"""
     Du bekommst folgende kontextuelle Dokumente als Grundlage für eine Prognose:
 
