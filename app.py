@@ -8,8 +8,8 @@ from datetime import datetime
 import pdfplumber
 import tiktoken  # NEU: für Tokenzählung
 
-# API-Key setzen
-openai.api_key = os.getenv("OPENAI_API_KEY")
+# OpenAI-Client initialisieren
+client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 st.set_page_config(page_title="Volkswirtschaftliche Prognose", page_icon="📈")
 st.title("📈 Volkswirtschaftliche Prognose für Regionalbanken")
@@ -59,7 +59,6 @@ if st.button("📈 Prognose jetzt generieren und als Word-Datei exportieren"):
     context_text = "\n\n".join(extracted_texts)
 
     # Ziel: maximal 115.000 Tokens für gesamten Prompt inkl. Kontext
-    # 1. Tokenbedarf des Prompts ohne Kontext berechnen
     dummy_context = "___CONTEXT___"
     prompt_template = f"""
     Du bekommst folgende kontextuelle Dokumente als Grundlage für eine Prognose:
@@ -114,13 +113,13 @@ if st.button("📈 Prognose jetzt generieren und als Word-Datei exportieren"):
 
     with st.spinner("Generiere Prognose..."):
         try:
-            response = openai.ChatCompletion.create(
+            response = client.chat.completions.create(
                 model="gpt-4",
                 messages=[{"role": "user", "content": prompt}],
                 temperature=0.7,
                 max_tokens=3000,
             )
-            result = response["choices"][0]["message"]["content"]
+            result = response.choices[0].message.content
             st.success("Prognose erfolgreich erstellt!")
             st.markdown(result)
 
