@@ -68,6 +68,8 @@ if st.button("📈 Prognose jetzt generieren und als Word-Datei exportieren"):
        - Auswirkungen auf das Bankgeschäft: Zinsüberschuss, Kreditnachfrage, Risiken
        - Wirtschaftliche Risiken: interne/externe Unsicherheiten, Stressszenarien
 
+    Für jeden dieser Abschnitte gilt: Stelle sicher, dass er mindestens eine halbe DIN-A4-Seite (ca. 1800 Zeichen oder mehr) umfasst. Führe dazu vertiefte Analysen, Vergleiche, Begründungen und ggf. Beispiele an. Nutze klare Strukturierungen und Zwischenüberschriften.
+
     Verwende bevorzugt die Informationen aus den bereitgestellten Dokumenten. Wenn zu einem Bereich keine konkreten Aussagen enthalten sind, ergänze diesen Abschnitt durch fundierte eigene Einschätzungen. Zitiere bei konkreten Aussagen aus dem Upload den Wortlaut sinngemäß.
 
     Verwende professionelle, sachliche Sprache. Gliedere die Abschnitte sauber. Füge Zwischenüberschriften und ggf. Bulletpoints ein. Die Inhalte sollen geeignet für ein Vorstandsgremium sein.
