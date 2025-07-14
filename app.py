@@ -62,7 +62,7 @@ if st.button("📈 Prognose jetzt generieren und als Word-Datei exportieren"):
        - EUR/USD Wechselkurs
        - Energiepreise (Brent, Gas)
 
-    2. Gib für jeden dieser makroökonomischen Cluster eine **ausführlich begründete und detaillierte** Prognose für die nächsten 3–5 Jahre ab:
+    2. Gib für jeden dieser makroökonomischen Cluster eine **ausführlich begründete, analytisch tiefgehende** Prognose für die nächsten 3–5 Jahre ab:
        - Bruttoinlandsprodukt (BIP): Entwicklung, Sektoren, Prognoserisiken, Einflussgrößen
        - Inflation (HVPI): Kerninflation vs. Gesamt, Preisentwicklungen, Energie, Löhne
        - Arbeitsmarkt: Beschäftigungstrends, Fachkräftemangel, Sektoren
@@ -72,11 +72,15 @@ if st.button("📈 Prognose jetzt generieren und als Word-Datei exportieren"):
        - Auswirkungen auf das Bankgeschäft: Zinsüberschuss, Kreditnachfrage, Risiken
        - Wirtschaftliche Risiken: interne/externe Unsicherheiten, Stressszenarien
 
-    Für jeden dieser Abschnitte gilt: Stelle sicher, dass er mindestens eine halbe DIN-A4-Seite (ca. 1800 Zeichen oder mehr) umfasst. Führe dazu vertiefte Analysen, Vergleiche, Begründungen und ggf. Beispiele an. Nutze klare Strukturierungen und Zwischenüberschriften.
+    Für jeden dieser Abschnitte:
+    - Beginne mit einer kurzen prägnanten **Zusammenfassung** (3–4 Sätze)
+    - Erstelle im Anschluss einen **detaillierten Hauptteil** mit mindestens 1800 Zeichen pro Abschnitt
+    - Nutze klare Zwischenüberschriften, Aufzählungen, ggf. tabellarische Vergleiche
+    - Führe Analysen, Begründungen und Beispiele an
 
     Verwende bevorzugt die Informationen aus den bereitgestellten Dokumenten. Wenn zu einem Bereich keine konkreten Aussagen enthalten sind, ergänze diesen Abschnitt durch fundierte eigene Einschätzungen. Zitiere bei konkreten Aussagen aus dem Upload den Wortlaut sinngemäß.
 
-    Verwende professionelle, sachliche Sprache. Gliedere die Abschnitte sauber. Füge Zwischenüberschriften und ggf. Bulletpoints ein. Die Inhalte sollen geeignet für ein Vorstandsgremium sein.
+    Verwende professionelle, sachliche Sprache. Die Inhalte sollen geeignet für ein Vorstandsgremium sein.
     """
 
     with st.spinner("Generiere Prognose..."):
