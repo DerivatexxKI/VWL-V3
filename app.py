@@ -1,14 +1,14 @@
 import streamlit as st
-import openai
 import os
+from openai import OpenAI
 from docx import Document
 from docx.shared import Pt
 from io import BytesIO
 from datetime import datetime
 import pdfplumber
 
-# API-Key setzen
-openai.api_key = os.getenv("OPENAI_API_KEY")
+# OpenAI-Client korrekt initialisieren
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 st.set_page_config(page_title="Volkswirtschaftliche Prognose", page_icon="📈")
 st.title("📈 Volkswirtschaftliche Prognose für Regionalbanken")
@@ -38,7 +38,7 @@ if uploaded_files:
 if uploaded_files and st.button("📈 Prognose jetzt generieren und als Word-Datei exportieren"):
     context_text = "\n\n".join(extracted_texts)
 
-    # Text auf max. 15.000 Zeichen begrenzen
+    # Eingabetext beschränken
     max_chars = 15000
     context_text = context_text[:max_chars]
     st.info(f"📏 Eingabeumfang (nach Kürzung): {len(context_text):,} Zeichen")
@@ -73,40 +73,34 @@ if uploaded_files and st.button("📈 Prognose jetzt generieren und als Word-Dat
 
     with st.spinner("Generiere Prognose..."):
         try:
-            response = openai.ChatCompletion.create(
+            response = client.chat.completions.create(
                 model="gpt-4",
                 messages=[{"role": "user", "content": prompt}],
                 temperature=0.7,
-                max_tokens=3000,
+                max_tokens=3000
             )
-            result = response["choices"][0]["message"]["content"]
-            st.success("Prognose erfolgreich erstellt!")
+            result = response.choices[0].message.content
+            st.success("✅ Prognose erfolgreich erstellt!")
             st.markdown(result)
 
-            # Word-Dokument erstellen
+            # Word-Dokument erzeugen
             doc = Document()
-
-            # Titelblatt
             doc.add_heading("Volkswirtschaftliche Mittelfristprognose", 0)
             doc.add_paragraph("Erstellt am: " + datetime.now().strftime("%d.%m.%Y"))
             doc.add_paragraph("Zielgruppe: Vorstand und Planungsteam der Regionalbank")
             doc.add_page_break()
 
-            # Inhaltsverzeichnis-Hinweis
             doc.add_paragraph("Inhaltsverzeichnis wird automatisch generiert (in Word aktivieren).")
             doc.add_page_break()
 
-            # Inhalt einfügen
             for section in result.split("\n\n"):
                 doc.add_paragraph(section, style='Normal')
 
-            # Formatierung optimieren
             style = doc.styles['Normal']
             font = style.font
             font.name = 'Calibri'
             font.size = Pt(11)
 
-            # Download-Link erzeugen
             buffer = BytesIO()
             doc.save(buffer)
             buffer.seek(0)
@@ -119,7 +113,7 @@ if uploaded_files and st.button("📈 Prognose jetzt generieren und als Word-Dat
             )
 
         except Exception as e:
-            st.error(f"Fehler beim Abruf der Prognose: {e}")
+            st.error(f"❌ Fehler beim Abruf der Prognose: {e}")
 
 elif not uploaded_files:
     st.info("⬆ Bitte laden Sie mindestens eine PDF- oder Word-Datei hoch, um die Prognose zu starten.")
