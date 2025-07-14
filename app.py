@@ -2,10 +2,10 @@ import streamlit as st
 import os
 from openai import OpenAI
 
-# 🧠 OpenAI Client korrekt initialisieren
-client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
+# API-Key sicher laden
+api_key = os.getenv("OPENAI_API_KEY")
+client = OpenAI(api_key=api_key)
 
-# 🖥️ Streamlit UI
 st.set_page_config(page_title="Volkswirtschaftliche Prognose", page_icon="📊")
 st.title("📊 Volkswirtschaftliche Prognose für Regionalbanken")
 
@@ -35,6 +35,5 @@ if st.button("📈 Prognose jetzt generieren"):
             )
             st.success("Fertig!")
             st.markdown(response.choices[0].message.content)
-
         except Exception as e:
-            st.error(f"Fehler: {e}")
+            st.error(f"Fehler beim Abrufen der Prognose: {e}")
