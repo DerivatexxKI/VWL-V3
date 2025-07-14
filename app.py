@@ -5,6 +5,7 @@ from docx import Document
 from docx.shared import Inches, Pt
 from io import BytesIO
 from datetime import datetime
+import pdfplumber
 
 # API-Key setzen
 openai.api_key = os.getenv("OPENAI_API_KEY")
@@ -12,9 +13,37 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 st.set_page_config(page_title="Volkswirtschaftliche Prognose", page_icon="📈")
 st.title("📈 Volkswirtschaftliche Prognose für Regionalbanken")
 
+# Uploadfeld für PDF- oder Word-Dateien
+uploaded_files = st.file_uploader(
+    "📎 Relevante PDF- oder Word-Dokumente hochladen (optional)",
+    type=["pdf", "docx"],
+    accept_multiple_files=True
+)
+
+# Inhalte aus hochgeladenen Dateien extrahieren
+extracted_texts = []
+if uploaded_files:
+    for file in uploaded_files:
+        if file.name.endswith(".pdf"):
+            with pdfplumber.open(file) as pdf:
+                text = "\n".join(page.extract_text() or "" for page in pdf.pages)
+                extracted_texts.append(text)
+        elif file.name.endswith(".docx"):
+            from docx import Document as DocxDocument
+            docx = DocxDocument(file)
+            text = "\n".join([para.text for para in docx.paragraphs])
+            extracted_texts.append(text)
+
+# Button zur Prognoseerstellung
 if st.button("📈 Prognose jetzt generieren und als Word-Datei exportieren"):
-    prompt = """
-    Erstelle eine volkswirtschaftliche Prognose für die Mittelfristplanung einer kleinen deutschen Regionalbank mit folgenden Bestandteilen:
+    context_text = "\n\n".join(extracted_texts)
+
+    prompt = f"""
+    Du bekommst folgende kontextuelle Dokumente als Grundlage für eine Prognose:
+
+    {context_text}
+
+    Erstelle darauf basierend eine volkswirtschaftliche Prognose für die Mittelfristplanung einer kleinen deutschen Regionalbank mit folgenden Bestandteilen:
 
     1. Erstelle eine Tabelle mit Planungsprämissen zu folgenden Punkten:
        - BIP-Wachstum
