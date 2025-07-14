@@ -1,10 +1,9 @@
 import streamlit as st
+import openai
 import os
-from openai import OpenAI
 
-# API-Key sicher laden
-api_key = os.getenv("OPENAI_API_KEY")
-client = OpenAI(api_key=api_key)
+# API-Key setzen
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 st.set_page_config(page_title="Volkswirtschaftliche Prognose", page_icon="📊")
 st.title("📊 Volkswirtschaftliche Prognose für Regionalbanken")
@@ -27,13 +26,15 @@ if st.button("📈 Prognose jetzt generieren"):
 
     with st.spinner("Generiere Prognose..."):
         try:
-            response = client.chat.completions.create(
+            response = openai.ChatCompletion.create(
                 model="gpt-4",
                 messages=[{"role": "user", "content": prompt}],
                 temperature=0.7,
                 max_tokens=1800,
             )
+            result = response["choices"][0]["message"]["content"]
             st.success("Fertig!")
-            st.markdown(response.choices[0].message.content)
+            st.markdown(result)
+
         except Exception as e:
-            st.error(f"Fehler beim Abrufen der Prognose: {e}")
+            st.error(f"Fehler beim Abruf der Prognose: {e}")
