@@ -1,14 +1,14 @@
 import streamlit as st
 import os
-from openai import OpenAI
+import openai
 from docx import Document
 from docx.shared import Pt
 from io import BytesIO
 from datetime import datetime
 import pdfplumber
 
-# OpenAI-Client initialisieren
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+# OpenAI-API-Schlüssel setzen
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 st.set_page_config(page_title="Volkswirtschaftliche Prognose", page_icon="📈")
 st.title("📈 Volkswirtschaftliche Prognose für Regionalbanken")
@@ -72,13 +72,13 @@ if uploaded_files and st.button("📈 Prognose jetzt generieren und als Word-Dat
 
     with st.spinner("Generiere Prognose..."):
         try:
-            response = client.chat.completions.create(
+            response = openai.ChatCompletion.create(
                 model="gpt-4",
                 messages=[{"role": "user", "content": prompt}],
                 temperature=0.7,
                 max_tokens=3000
             )
-            result = response.choices[0].message.content
+            result = response.choices[0].message["content"]
             st.success("✅ Prognose erfolgreich erstellt!")
             st.markdown(result)
 
