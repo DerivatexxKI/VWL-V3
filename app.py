@@ -58,19 +58,13 @@ def num_tokens_from_string(string: str) -> int:
 if st.button("📈 Prognose jetzt generieren und als Word-Datei exportieren"):
     context_text = "\n\n".join(extracted_texts)
 
-    # Begrenzung der Token-Menge auf 8000 (≈ Sicherheitspuffer)
-    max_tokens = 8000
-    tokens = num_tokens_from_string(context_text)
-    if tokens > max_tokens:
-        st.warning(f"✂️ Der hochgeladene Text wurde auf {max_tokens} Tokens gekürzt (ursprünglich: {tokens}).")
-        while num_tokens_from_string(context_text) > max_tokens:
-            context_text = context_text[:-1000]  # iterativ kürzen
-    st.info(f"📏 Eingabeumfang: {num_tokens_from_string(context_text):,} Tokens")
-
-    prompt = f"""
+    # Ziel: maximal 115.000 Tokens für gesamten Prompt inkl. Kontext
+    # 1. Tokenbedarf des Prompts ohne Kontext berechnen
+    dummy_context = "___CONTEXT___"
+    prompt_template = f"""
     Du bekommst folgende kontextuelle Dokumente als Grundlage für eine Prognose:
 
-    {context_text}
+    {dummy_context}
 
     Erstelle darauf basierend eine volkswirtschaftliche Prognose für die Mittelfristplanung einer kleinen deutschen Regionalbank mit folgenden Bestandteilen:
 
@@ -102,6 +96,21 @@ if st.button("📈 Prognose jetzt generieren und als Word-Datei exportieren"):
 
     Verwende professionelle, sachliche Sprache. Die Inhalte sollen geeignet für ein Vorstandsgremium sein.
     """
+    prompt_token_count = num_tokens_from_string(prompt_template.replace(dummy_context, ""))
+    st.info(f"🧠 Prompt-Grundgerüst benötigt ca. {prompt_token_count:,} Tokens")
+
+    max_total_tokens = 115000
+    available_for_context = max_total_tokens - prompt_token_count
+
+    context_tokens = num_tokens_from_string(context_text)
+    st.info(f"📄 Kontext benötigt aktuell: {context_tokens:,} Tokens (erlaubt: {available_for_context:,})")
+
+    if context_tokens > available_for_context:
+        st.warning("✂️ Kontexttext wird gekürzt, um ins Tokenlimit zu passen.")
+        while num_tokens_from_string(context_text) > available_for_context:
+            context_text = context_text[:-2000]  # iterativ kürzen
+
+    prompt = prompt_template.replace(dummy_context, context_text)
 
     with st.spinner("Generiere Prognose..."):
         try:
