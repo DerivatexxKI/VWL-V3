@@ -58,17 +58,17 @@ if st.button("📈 Prognose jetzt generieren und als Word-Datei exportieren"):
        - EUR/USD Wechselkurs
        - Energiepreise (Brent, Gas)
 
-    2. Gib für jeden dieser makroökonomischen Cluster eine detaillierte Prognose für die nächsten 3–5 Jahre ab:
-       - Bruttoinlandsprodukt (BIP)
-       - Inflation (HVPI)
-       - Arbeitsmarkt
-       - Geldpolitik der EZB
-       - Zinsstruktur (Swapkurve)
-       - Geopolitische Risiken
-       - Auswirkungen auf das Bankgeschäft
-       - Wirtschaftliche Risiken
+    2. Gib für jeden dieser makroökonomischen Cluster eine **ausführlich begründete und detaillierte** Prognose für die nächsten 3–5 Jahre ab:
+       - Bruttoinlandsprodukt (BIP): Entwicklung, Sektoren, Prognoserisiken, Einflussgrößen
+       - Inflation (HVPI): Kerninflation vs. Gesamt, Preisentwicklungen, Energie, Löhne
+       - Arbeitsmarkt: Beschäftigungstrends, Fachkräftemangel, Sektoren
+       - Geldpolitik der EZB: Begründung der Zinspolitik, Ausblick
+       - Zinsstruktur (Swapkurve): Verlauf, Markterwartung, Einflussfaktoren
+       - Geopolitische Risiken: Regionen, Auswirkungen, Szenarien
+       - Auswirkungen auf das Bankgeschäft: Zinsüberschuss, Kreditnachfrage, Risiken
+       - Wirtschaftliche Risiken: interne/externe Unsicherheiten, Stressszenarien
 
-    Verwende professionelle, sachliche Sprache. Gliedere die Abschnitte sauber. Füge Zwischenüberschriften ein. Die Inhalte sollen geeignet für ein Vorstandsgremium sein.
+    Verwende professionelle, sachliche Sprache. Gliedere die Abschnitte sauber. Füge Zwischenüberschriften und ggf. Bulletpoints ein. Die Inhalte sollen geeignet für ein Vorstandsgremium sein.
     """
 
     with st.spinner("Generiere Prognose..."):
