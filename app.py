@@ -2,9 +2,10 @@ import streamlit as st
 import os
 from openai import OpenAI
 
-# OpenAI initialisieren (neue Syntax ab v1.0)
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+# 🧠 OpenAI Client korrekt initialisieren
+client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
 
+# 🖥️ Streamlit UI
 st.set_page_config(page_title="Volkswirtschaftliche Prognose", page_icon="📊")
 st.title("📊 Volkswirtschaftliche Prognose für Regionalbanken")
 
@@ -25,12 +26,15 @@ if st.button("📈 Prognose jetzt generieren"):
     """
 
     with st.spinner("Generiere Prognose..."):
-        response = client.chat.completions.create(
-            model="gpt-4",
-            messages=[{"role": "user", "content": prompt}],
-            temperature=0.7,
-            max_tokens=1800,
-        )
-        result = response.choices[0].message.content
-        st.success("Fertig!")
-        st.markdown(result)
+        try:
+            response = client.chat.completions.create(
+                model="gpt-4",
+                messages=[{"role": "user", "content": prompt}],
+                temperature=0.7,
+                max_tokens=1800,
+            )
+            st.success("Fertig!")
+            st.markdown(response.choices[0].message.content)
+
+        except Exception as e:
+            st.error(f"Fehler: {e}")
