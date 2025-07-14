@@ -6,6 +6,7 @@ from docx.shared import Inches, Pt
 from io import BytesIO
 from datetime import datetime
 import pdfplumber
+import tiktoken  # NEU: für Tokenzählung
 
 # API-Key setzen
 openai.api_key = os.getenv("OPENAI_API_KEY")
@@ -48,14 +49,23 @@ if uploaded_files:
         except Exception as e:
             st.error(f"❌ Fehler beim Verarbeiten der Datei '{file.name}': {e}")
 
+# Tokenzähler definieren
+encoding = tiktoken.encoding_for_model("gpt-4")
+def num_tokens_from_string(string: str) -> int:
+    return len(encoding.encode(string))
+
 # Button zur Prognoseerstellung
 if st.button("📈 Prognose jetzt generieren und als Word-Datei exportieren"):
     context_text = "\n\n".join(extracted_texts)
 
-    # Begrenzung der Textmenge zur Vermeidung von Token-Limitüberschreitungen
-    max_chars = 15000
-    context_text = context_text[:max_chars]
-    st.info(f"📏 Eingabeumfang (nach Kürzung): {len(context_text):,} Zeichen")
+    # Begrenzung der Token-Menge auf 8000 (≈ Sicherheitspuffer)
+    max_tokens = 8000
+    tokens = num_tokens_from_string(context_text)
+    if tokens > max_tokens:
+        st.warning(f"✂️ Der hochgeladene Text wurde auf {max_tokens} Tokens gekürzt (ursprünglich: {tokens}).")
+        while num_tokens_from_string(context_text) > max_tokens:
+            context_text = context_text[:-1000]  # iterativ kürzen
+    st.info(f"📏 Eingabeumfang: {num_tokens_from_string(context_text):,} Tokens")
 
     prompt = f"""
     Du bekommst folgende kontextuelle Dokumente als Grundlage für eine Prognose:
