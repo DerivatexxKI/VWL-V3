@@ -1,6 +1,7 @@
 import streamlit as st
 import os
 from openai import OpenAI
+from openai.types.chat import ChatCompletionMessage
 from docx import Document
 from docx.shared import Pt
 from io import BytesIO
@@ -74,7 +75,7 @@ if uploaded_files and st.button("📈 Prognose jetzt generieren und als Word-Dat
         try:
             response = client.chat.completions.create(
                 model="gpt-4",
-                messages=[{"role": "user", "content": prompt}],
+                messages=[ChatCompletionMessage(role="user", content=prompt)],
                 temperature=0.7,
                 max_tokens=3000
             )
