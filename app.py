@@ -5,8 +5,8 @@ import os
 # API-Key setzen
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
-st.set_page_config(page_title="Volkswirtschaftliche Prognose", page_icon="📊")
-st.title("📊 Volkswirtschaftliche Prognose für Regionalbanken")
+st.set_page_config(page_title="Volkswirtschaftliche Prognose", page_icon="📈")
+st.title("📈 Volkswirtschaftliche Prognose für Regionalbanken")
 
 if st.button("📈 Prognose jetzt generieren"):
     prompt = """
