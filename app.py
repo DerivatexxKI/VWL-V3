@@ -7,7 +7,7 @@ from io import BytesIO
 from datetime import datetime
 import pdfplumber
 
-# OpenAI-Client korrekt initialisieren
+# OpenAI-Client initialisieren
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 st.set_page_config(page_title="Volkswirtschaftliche Prognose", page_icon="📈")
@@ -20,7 +20,7 @@ uploaded_files = st.file_uploader(
     accept_multiple_files=True
 )
 
-# Inhalte aus hochgeladenen Dateien extrahieren
+# Inhalte extrahieren
 extracted_texts = []
 if uploaded_files:
     st.success("✅ Datei(en) erfolgreich hochgeladen!")
@@ -38,7 +38,6 @@ if uploaded_files:
 if uploaded_files and st.button("📈 Prognose jetzt generieren und als Word-Datei exportieren"):
     context_text = "\n\n".join(extracted_texts)
 
-    # Eingabetext beschränken
     max_chars = 15000
     context_text = context_text[:max_chars]
     st.info(f"📏 Eingabeumfang (nach Kürzung): {len(context_text):,} Zeichen")
@@ -89,7 +88,6 @@ if uploaded_files and st.button("📈 Prognose jetzt generieren und als Word-Dat
             doc.add_paragraph("Erstellt am: " + datetime.now().strftime("%d.%m.%Y"))
             doc.add_paragraph("Zielgruppe: Vorstand und Planungsteam der Regionalbank")
             doc.add_page_break()
-
             doc.add_paragraph("Inhaltsverzeichnis wird automatisch generiert (in Word aktivieren).")
             doc.add_page_break()
 
