@@ -68,6 +68,8 @@ if st.button("📈 Prognose jetzt generieren und als Word-Datei exportieren"):
        - Auswirkungen auf das Bankgeschäft: Zinsüberschuss, Kreditnachfrage, Risiken
        - Wirtschaftliche Risiken: interne/externe Unsicherheiten, Stressszenarien
 
+    Verwende bevorzugt die Informationen aus den bereitgestellten Dokumenten. Wenn zu einem Bereich keine konkreten Aussagen enthalten sind, ergänze diesen Abschnitt durch fundierte eigene Einschätzungen. Zitiere bei konkreten Aussagen aus dem Upload den Wortlaut sinngemäß.
+
     Verwende professionelle, sachliche Sprache. Gliedere die Abschnitte sauber. Füge Zwischenüberschriften und ggf. Bulletpoints ein. Die Inhalte sollen geeignet für ein Vorstandsgremium sein.
     """
 
