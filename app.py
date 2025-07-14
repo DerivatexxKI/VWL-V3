@@ -2,12 +2,10 @@ import streamlit as st
 import openai
 import os
 from docx import Document
-from docx.shared import Inches, Pt
+from docx.shared import Pt
 from io import BytesIO
 from datetime import datetime
 import pdfplumber
-import pandas as pd
-import matplotlib.pyplot as plt
 
 # API-Key setzen
 openai.api_key = os.getenv("OPENAI_API_KEY")
@@ -20,13 +18,6 @@ uploaded_files = st.file_uploader(
     "📎 Relevante PDF- oder Word-Dokumente hochladen (optional)",
     type=["pdf", "docx"],
     accept_multiple_files=True
-)
-
-# Uploadfeld für CSV-Zeitreihe
-uploaded_csv = st.file_uploader(
-    "📊 Zeitreihe im CSV-Format hochladen (optional, Spalten: Datum, Wert)",
-    type="csv",
-    accept_multiple_files=False
 )
 
 # Inhalte aus hochgeladenen Dateien extrahieren
@@ -43,26 +34,6 @@ if uploaded_files:
             docx = DocxDocument(file)
             text = "\n".join([para.text for para in docx.paragraphs])
             extracted_texts.append(text)
-
-# Zeitreihe als Chart darstellen und für Export merken
-chart_fig = None
-if uploaded_csv:
-    try:
-        df = pd.read_csv(uploaded_csv, parse_dates=['Datum'])
-        df = df.sort_values("Datum")
-        st.line_chart(df.set_index("Datum"))
-
-        fig, ax = plt.subplots()
-        for col in df.columns:
-            if col != "Datum":
-                ax.plot(df["Datum"], df[col], label=col)
-        ax.set_title("Zeitreihen-Diagramm")
-        ax.set_xlabel("Datum")
-        ax.set_ylabel("Wert")
-        ax.legend()
-        chart_fig = fig
-    except Exception as e:
-        st.error(f"Fehler beim Verarbeiten der CSV-Datei: {e}")
 
 if uploaded_files and st.button("📈 Prognose jetzt generieren und als Word-Datei exportieren"):
     context_text = "\n\n".join(extracted_texts)
@@ -125,18 +96,9 @@ if uploaded_files and st.button("📈 Prognose jetzt generieren und als Word-Dat
             doc.add_paragraph("Inhaltsverzeichnis wird automatisch generiert (in Word aktivieren).")
             doc.add_page_break()
 
-            # Inhalt einfügen (abschnittsweise)
+            # Inhalt einfügen
             for section in result.split("\n\n"):
                 doc.add_paragraph(section, style='Normal')
-
-            # Diagramm einfügen (falls vorhanden)
-            if chart_fig:
-                chart_img = BytesIO()
-                chart_fig.savefig(chart_img, format='png')
-                chart_img.seek(0)
-                doc.add_page_break()
-                doc.add_paragraph("Abbildung: Hochgeladene Zeitreihe")
-                doc.add_picture(chart_img, width=Inches(6))
 
             # Formatierung optimieren
             style = doc.styles['Normal']
