@@ -22,21 +22,31 @@ uploaded_files = st.file_uploader(
 
 # Inhalte aus hochgeladenen Dateien extrahieren
 extracted_texts = []
+MAX_PAGES = 25  # Maximal 25 Seiten pro PDF auslesen
 if uploaded_files:
     for file in uploaded_files:
-        if file.name.endswith(".pdf"):
-            with pdfplumber.open(file) as pdf:
-                text = "\n".join(page.extract_text() or "" for page in pdf.pages)
+        try:
+            if file.name.endswith(".pdf"):
+                with pdfplumber.open(file) as pdf:
+                    text = "\n".join(page.extract_text() or "" for page in pdf.pages[:MAX_PAGES])
+                    if not text.strip():
+                        st.warning(f"⚠️ Keine lesbaren Textinhalte in PDF '{file.name}' erkannt.")
+                        continue
+                    extracted_texts.append(text)
+                    if len(text.strip()) < 500:
+                        st.warning(f"⚠️ Wenig Text erkannt in PDF '{file.name}'. Die Datei enthält möglicherweise eingescannten oder nicht maschinenlesbaren Text.")
+            elif file.name.endswith(".docx"):
+                from docx import Document as DocxDocument
+                docx = DocxDocument(file)
+                text = "\n".join([para.text for para in docx.paragraphs])
+                if not text.strip():
+                    st.warning(f"⚠️ Keine lesbaren Textinhalte in Word-Datei '{file.name}' erkannt.")
+                    continue
                 extracted_texts.append(text)
                 if len(text.strip()) < 500:
-                    st.warning(f"⚠️ Wenig Text erkannt in PDF '{file.name}'. Die Datei enthält möglicherweise eingescannten oder nicht maschinenlesbaren Text.")
-        elif file.name.endswith(".docx"):
-            from docx import Document as DocxDocument
-            docx = DocxDocument(file)
-            text = "\n".join([para.text for para in docx.paragraphs])
-            extracted_texts.append(text)
-            if len(text.strip()) < 500:
-                st.warning(f"⚠️ Wenig Text erkannt in Word-Datei '{file.name}'. Bitte prüfen, ob sie inhaltlich korrekt gefüllt ist.")
+                    st.warning(f"⚠️ Wenig Text erkannt in Word-Datei '{file.name}'. Bitte prüfen, ob sie inhaltlich korrekt gefüllt ist.")
+        except Exception as e:
+            st.error(f"❌ Fehler beim Verarbeiten der Datei '{file.name}': {e}")
 
 # Button zur Prognoseerstellung
 if st.button("📈 Prognose jetzt generieren und als Word-Datei exportieren"):
